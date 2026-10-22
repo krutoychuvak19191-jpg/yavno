@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yawno | Neural Gesture Interface</title>
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4385C7;
+            --accent: #D96640;
+            --bg: #0a0f18;
+            --card-bg: rgba(26, 38, 57, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 0%, #1e2e45 0%, var(--bg) 70%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- Шапка --- */
+        header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(67, 133, 199, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 56px;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(67, 133, 199, 0.5);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+
+        /* --- Карточка задания --- */
+        .task-card {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(67, 133, 199, 0.4);
+            border-radius: 20px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .progress-badge {
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            letter-spacing: 1px;
+        }
+
+        .task-name {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .task-hint {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* --- Контейнер с камерой --- */
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(67, 133, 199, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Зеркальное отражение */
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: scaleX(-1);
+            z-index: 10;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(67, 133, 199, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Статус и кнопки --- */
+        .status-message {
+            font-size: 24px;
+            font-weight: 800;
+            min-height: 40px;
+            margin: 20px 0;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-skip {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(217, 102, 64, 0.4);
+        }
+
+        .btn-skip:hover {
+            background: #c55634;
+            transform: translateY(-2px);
+        }
+
+        .btn-restart {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 133, 199, 0.4);
+        }
+
+        .btn-restart:hover {
+            background: #326ca6;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Адаптивность --- */
+        @media (max-width: 768px) {
+            .task-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .logo { font-size: 40px; }
+            header { flex-direction: column; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="logo">Yawno</h1>
+        <span class="subtitle">Neural Gesture Interface</span>
+    </header>
+
+    <div class="task-card">
+        <div class="task-info">
+            <div class="progress-badge" id="progress">1 / 5</div>
+            <div>
+                <div class="task-name" id="task-name">Загрузка...</div>
+                <div class="task-hint" id="task-hint">Подготовка нейросети...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="camera-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="overlay"></canvas>
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <div>Инициализация ИИ...</div>
+        </div>
+    </div>
+
+    <div class="status-message" id="status"></div>
+
+    <div class="controls">
+        <button class="btn-skip" id="btn-skip" onclick="skipGesture()">Пропустить ⏭</button>
+        <button class="btn-restart hidden" id="btn-restart" onclick="restartGame()">Начать заново 🔄</button>
+    </div>
+
+    <!-- Подключение MediaPipe Tasks Vision -->
+    <script type="module">
+        import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+
+        // --- Конфигурация жестов ---
+        const GESTURES_DB = {
+            "ДА (Класс)": [1, 0, 0, 0, 0],
+            "НЕТ": [0, 1, 0, 0, 0],
+            "ПРИВЕТ": [1, 1, 1, 1, 1],
+            "ЛЮБЛЮ": [1, 1, 0, 0, 1],
+            "ПОКА": [0, 1, 1, 1, 1]
+        };
+
+        const HINTS = {
+            "ДА (Класс)": "Поднимите большой палец вверх",
+            "НЕТ": "Поднимите только указательный палец",
+            "ПРИВЕТ": "Покажите открытую ладонь",
+            "ЛЮБЛЮ": "Большой, указательный и мизинец",
+            "ПОКА": "Ладонь без большого пальца"
+        };
+
+        const gestureList = Object.keys(GESTURES_DB);
+        let currentIndex = 0;
+        let currentTarget = gestureList[currentIndex];
+        
+        let startTime = Date.now();
+        let isCountingDown = false;
+        let countdownStart = 0;
+        let isFinished = false;
+
+        // DOM Elements
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const loadingOverlay = document.getElementById('loading');
+        const taskNameEl = document.getElementById('task-name');
+        const taskHintEl = document.getElementById('task-hint');
+        const progressEl = document.getElementById('progress');
+        const statusEl = document.getElementById('status');
+        const btnSkip = document.getElementById('btn-skip');
+        const btnRestart = document.getElementById('btn-restart');
+
+        // --- Инициализация MediaPipe ---
+        let handLandmarker;
+        let lastVideoTime = -1;
+
+        async function init() {
+            // Загружаем WASM файлы
+            const vision = await FilesetResolver.forVisionTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+            );
+            
+            // Создаем детектор
+            handLandmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+                    delegate: "GPU"
+                },
+                runningMode: "VIDEO",
+                numHands: 1
+            });
+
+            // Включаем камеру
+            navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.addEventListener("loadeddata", predictWebcam);
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => loadingOverlay.classList.add('hidden'), 500);
+                    updateUI();
+                })
+                .catch(err => {
+                    loadingOverlay.innerHTML = "<div style='color:#EF4444'>Ошибка доступа к камере. Разрешите доступ.</div>";
+                    console.error(err);
+                });
+        }
+
+        // --- Логика распознавания пальцев (порт с Python) ---
+        function getFingerStates(landmarks) {
+            const fingers = [];
+            
+            // Большой палец (4, 3, 5)
+            const thumbTip = landmarks[4];
+            const thumbIp = landmarks[3];
+            const indexMcp = landmarks[5];
+            
+            const distTip = Math.hypot(thumbTip.x - indexMcp.x, thumbTip.y - indexMcp.y);
+            const distIp = Math.hypot(thumbIp.x - indexMcp.x, thumbIp.y - indexMcp.y);
+            fingers.push(distTip > distIp * 1.2 ? 1 : 0);
+
+            // Остальные пальцы (сравнение Y)
+            const tips = [8, 12, 16, 20];
+            const pips = [6, 10, 14, 18];
+            for (let i = 0; i < 4; i++) {
+                fingers.push(landmarks[tips[i]].y < landmarks[pips[i]].y ? 1 : 0);
+            }
+
+            return fingers;
+        }
+
+        function calculateAccuracy(userFingers, targetFingers) {
+            let matches = 0;
+            for (let i = 0; i < 5; i++) {
+                if (userFingers[i] === targetFingers[i]) matches++;
+            }
+            return Math.floor((matches / 5) * 100);
+        }
+
+        // --- Основной цикл отрисовки ---
+        function predictWebcam() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            let startTimeMs = performance.now();
+            if (lastVideoTime !== video.currentTime) {
+                lastVideoTime = video.currentTime;
+                const results = handLandmarker.detectForVideo(video, startTimeMs);
+                processResults(results);
+            }
+            window.requestAnimationFrame(predictWebcam);
+        }
+
+        function processResults(results) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let userFingers = null;
+
+            if (results.landmarks && results.landmarks.length > 0) {
+                for (const landmarks of results.landmarks) {
+                    // Рисуем точки
+                    for (const lm of landmarks) {
+                        const x = lm.x * canvas.width;
+                        const y = lm.y * canvas.height;
+                        
+                        // Стиль точек (как в Python)
+                        ctx.beginPath();
+                        ctx.arc(x, y, 6, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#4385C7'; // Синий
+                        ctx.fill();
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#ffffff'; // Белый
+                        ctx.fill();
+                    }
+                    userFingers = getFingerStates(landmarks);
+                }
+            }
+
+            // Логика игры
+            if (!isFinished) {
+                if (isCountingDown) {
+                    const elapsed = (Date.now() - countdownStart) / 1000;
+                    const remaining = 3.0 - elapsed;
+                    
+                    if (remaining > 0) {
+                        statusEl.textContent = `✅ ВЕРНО! Ждём... ${Math.floor(remaining) + 1}`;
+                        statusEl.style.color = '#10B981';
+                    } else {
+                        isCountingDown = false;
+                        nextGesture();
+                    }
+                } 
+                else if (userFingers) {
+                    const targetFingers = GESTURES_DB[currentTarget];
+                    const accuracy = calculateAccuracy(userFingers, targetFingers);
+
+                    if (accuracy >= 80) {
+                        if ((Date.now() - startTime) / 1000 > 1.0) {
+                            isCountingDown = true;
+                            countdownStart = Date.now();
+                            statusEl.textContent = "✅ ВЕРНО! Ждём... 3";
+                            statusEl.style.color = '#10B981';
+                        }
+                    } else {
+                        statusEl.textContent = `❌ Мимо... ${accuracy}%`;
+                        statusEl.style.color = '#EF4444';
+                        startTime = Date.now();
+                    }
+                } 
+                else {
+                    if (!isCountingDown) {
+                        startTime = Date.now();
+                        statusEl.textContent = "";
+                    }
+                }
+            }
+        }
+
+        // --- UI Функции ---
+        function updateUI() {
+            if (isFinished) {
+                progressEl.textContent = "ГОТОВО";
+                taskNameEl.textContent = "🎉 ТРЕНИРОВКА ЗАВЕРШЕНА! 🎉";
+                taskHintEl.textContent = "Вы молодец!";
+                btnSkip.classList.add('hidden');
+                btnRestart.classList.remove('hidden');
+            } else {
+                progressEl.textContent = `${currentIndex + 1} / ${gestureList.length}`;
+                taskNameEl.textContent = currentTarget;
+                taskHintEl.textContent = HINTS[currentTarget];
+            }
+        }
+
+        function nextGesture() {
+            if (isFinished) return;
+            
+            currentIndex++;
+            if (currentIndex >= gestureList.length) {
+                finishGame();
+                return;
+            }
+            
+            currentTarget = gestureList[currentIndex];
+            startTime = Date.now();
+            statusEl.textContent = "";
+            isCountingDown = false;
+            updateUI();
+        }
+
+        function skipGesture() {
+            nextGesture();
+        }
+
+        function finishGame() {
+            isFinished = true;
+            isCountingDown = false;
+            statusEl.textContent = "🎉 ТРЕНИРОВКА ЗАВЕРШЕНА! 🎉";
+            statusEl.style.color = '#10B981';
+            updateUI();
+        }
+
+        function restartGame() {
+            isFinished = false;
+            currentIndex = 0;
+            currentTarget = gestureList[0];
+            startTime = Date.now();
+            isCountingDown = false;
+            statusEl.textContent = "";
+            btnSkip.classList.remove('hidden');
+            btnRestart.classList.add('hidden');
+            updateUI();
+        }
+
+        // Запуск
+        init();
+    </script>
+</body>
+</html>
