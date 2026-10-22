@@ -11,12 +11,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&family=Montserrat:wght@700;800;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Переменные цветов --- */
         :root {
             --blue: #4385C7;
             --orange: #D96640;
             --bg-dark: #05080f;
-            --bg-panel: rgba(13, 21, 33, 0.7);
+            --bg-panel: rgba(13, 21, 33, 0.8);
             --text-main: #ffffff;
             --text-muted: #7b94b5;
             --success: #10B981;
@@ -30,7 +29,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* --- Футуристичный фон с сеткой --- */
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -48,7 +46,6 @@
             position: relative;
         }
 
-        /* Свечение на фоне */
         .bg-glow {
             position: absolute;
             width: 600px;
@@ -61,63 +58,78 @@
         .glow-blue { background: var(--blue); top: -200px; left: -200px; }
         .glow-orange { background: var(--orange); bottom: -200px; right: -200px; }
 
-        /* --- Шапка --- */
         header {
             width: 100%;
             max-width: 1000px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             z-index: 10;
             border-bottom: 1px solid rgba(67, 133, 199, 0.2);
             padding-bottom: 15px;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: baseline;
-            gap: 15px;
-        }
-
+        .logo-container { display: flex; align-items: baseline; gap: 15px; }
         .logo {
             font-family: 'Irish Grover', cursive;
-            font-size: 64px;
+            font-size: 56px;
             color: var(--blue);
             text-shadow: 0 0 20px rgba(67, 133, 199, 0.8);
             margin: 0;
             line-height: 1;
         }
-
         .subtitle {
             font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--orange);
             text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             font-weight: 800;
         }
 
-        /* --- Карточка задания --- */
-        .task-card {
+        /* --- Переключатель режимов --- */
+        .mode-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+        .mode-btn {
+            padding: 10px 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            border: 2px solid var(--blue);
+            background: transparent;
+            color: var(--blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .mode-btn.active {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(67, 133, 199, 0.5);
+        }
+        .mode-btn:hover { background: rgba(67, 133, 199, 0.2); }
+        .mode-btn.active:hover { background: var(--blue); }
+
+        /* --- Общие панели --- */
+        .panel {
             width: 100%;
             max-width: 1000px;
             background: var(--bg-panel);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-radius: 16px;
-            padding: 25px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 20px 30px;
             margin-bottom: 20px;
             position: relative;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
             z-index: 10;
         }
-
-        /* Светящаяся рамка карточки */
-        .task-card::before {
+        .panel::before {
             content: '';
             position: absolute;
             inset: 0;
@@ -130,12 +142,9 @@
             pointer-events: none;
         }
 
-        .task-info {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
+        /* --- Тренажер --- */
+        .trainer-panel { display: flex; align-items: center; justify-content: space-between; }
+        .task-info { display: flex; align-items: center; gap: 30px; }
         .progress-badge {
             background: rgba(67, 133, 199, 0.15);
             border: 1px solid var(--blue);
@@ -145,29 +154,56 @@
             font-size: 16px;
             padding: 10px 20px;
             border-radius: 8px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(67, 133, 199, 0.5);
-            box-shadow: 0 0 15px rgba(67, 133, 199, 0.2);
         }
+        .task-name { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .task-hint { font-size: 15px; color: var(--text-muted); border-left: 3px solid var(--orange); padding-left: 15px; font-weight: 600; }
 
-        .task-name {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 32px;
-            font-weight: 800;
+        /* --- Переводчик --- */
+        .translator-panel { display: flex; flex-direction: column; gap: 15px; }
+        .sentence-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(67, 133, 199, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 80px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .sentence-word {
+            background: rgba(217, 102, 64, 0.15);
+            border: 1px solid var(--orange);
             color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .sentence-placeholder { color: var(--text-muted); font-size: 18px; font-style: italic; }
+        
+        .translator-controls { display: flex; gap: 15px; }
+        .btn-action {
+            padding: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: all 0.3s;
+            border: none;
         }
+        .btn-clear { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-clear:hover { background: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+        .btn-delete { background: rgba(217, 102, 64, 0.2); color: var(--orange); border: 1px solid var(--orange); }
+        .btn-delete:hover { background: var(--orange); color: #fff; box-shadow: 0 0 15px rgba(217, 102, 64, 0.5); }
 
-        .task-hint {
-            font-size: 16px;
-            color: var(--text-muted);
-            border-left: 3px solid var(--orange);
-            padding-left: 15px;
-            font-weight: 600;
-        }
-
-        /* --- Контейнер с камерой (HUD) --- */
+        /* --- Камера --- */
         .camera-wrapper {
             position: relative;
             width: 100%;
@@ -177,7 +213,6 @@
             background: linear-gradient(135deg, var(--blue), transparent, var(--orange));
             z-index: 10;
         }
-
         .camera-container {
             position: relative;
             width: 100%;
@@ -186,159 +221,56 @@
             border-radius: 16px;
             overflow: hidden;
         }
-
-        /* Эффект сканирующей линии */
         .scanline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--orange);
-            box-shadow: 0 0 20px 5px rgba(217, 102, 64, 0.6);
-            opacity: 0.5;
-            animation: scan 3s linear infinite;
-            z-index: 15;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--orange); box-shadow: 0 0 20px 5px rgba(217, 102, 64, 0.6);
+            opacity: 0.5; animation: scan 3s linear infinite; z-index: 15; pointer-events: none;
         }
-
-        @keyframes scan {
-            0% { top: 0%; }
-            100% { top: 100%; }
-        }
-
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        
         video, canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1); /* Зеркало */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; transform: scaleX(-1);
         }
-
         canvas { z-index: 10; }
 
-        /* Уголки HUD */
-        .hud-corner {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--blue);
-            z-index: 12;
-            pointer-events: none;
-            opacity: 0.8;
-        }
+        .hud-corner { position: absolute; width: 30px; height: 30px; border: 3px solid var(--blue); z-index: 12; pointer-events: none; opacity: 0.8; }
         .hud-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
         .hud-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
         .hud-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
         .hud-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
 
-        /* --- Загрузка --- */
         .loading-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(5, 8, 15, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            backdrop-filter: blur(5px);
+            position: absolute; inset: 0; background: rgba(5, 8, 15, 0.9);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20;
         }
-
         .spinner {
-            width: 70px;
-            height: 70px;
-            border: 3px solid rgba(67, 133, 199, 0.1);
-            border-top-color: var(--blue);
-            border-bottom-color: var(--orange);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(217, 102, 64, 0.2);
+            width: 70px; height: 70px; border: 3px solid rgba(67, 133, 199, 0.1);
+            border-top-color: var(--blue); border-bottom-color: var(--orange);
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
         }
-
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* --- Статус --- */
         .status-message {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 28px;
-            font-weight: 900;
-            min-height: 50px;
-            margin: 25px 0;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            z-index: 10;
-            transition: all 0.3s ease;
-        }
-
-        /* --- Кнопки --- */
-        .controls {
-            display: flex;
-            gap: 25px;
-            z-index: 10;
-        }
-
-        button {
-            padding: 18px 45px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px;
-            font-weight: 800;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-skip {
-            background: transparent;
-            color: var(--orange);
-            border: 2px solid var(--orange);
-            box-shadow: inset 0 0 15px rgba(217, 102, 64, 0.2);
-        }
-
-        .btn-skip:hover {
-            background: var(--orange);
-            color: #fff;
-            box-shadow: 0 0 30px rgba(217, 102, 64, 0.8), inset 0 0 10px rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-restart {
-            background: var(--blue);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(67, 133, 199, 0.5);
-        }
-
-        .btn-restart:hover {
-            background: #529ae0;
-            box-shadow: 0 0 40px rgba(67, 133, 199, 0.9);
-            transform: translateY(-2px);
+            font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900;
+            min-height: 40px; margin: 15px 0; text-align: center;
+            text-transform: uppercase; letter-spacing: 2px; z-index: 10; transition: all 0.3s;
         }
 
         .hidden { display: none !important; }
 
-        /* --- Адаптивность --- */
         @media (max-width: 768px) {
-            .task-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .trainer-panel { flex-direction: column; align-items: flex-start; gap: 15px; }
             .logo { font-size: 48px; }
             header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .task-name { font-size: 24px; }
-            .controls { width: 100%; flex-direction: column; }
-            button { width: 100%; }
+            .mode-btn { padding: 10px 15px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Фоновое свечение -->
     <div class="bg-glow glow-blue"></div>
     <div class="bg-glow glow-orange"></div>
 
@@ -349,7 +281,14 @@
         </div>
     </header>
 
-    <div class="task-card">
+    <!-- Переключатель режимов -->
+    <div class="mode-switcher">
+        <button class="mode-btn active" id="btn-mode-trainer" onclick="switchMode('trainer')">Тренажер</button>
+        <button class="mode-btn" id="btn-mode-translator" onclick="switchMode('translator')">Переводчик</button>
+    </div>
+
+    <!-- Панель тренажера -->
+    <div id="trainer-panel" class="panel trainer-panel">
         <div class="task-info">
             <div class="progress-badge" id="progress">01 / 05</div>
             <div class="task-name" id="task-name">Инициализация...</div>
@@ -357,18 +296,26 @@
         <div class="task-hint" id="task-hint">Ожидание нейросети...</div>
     </div>
 
+    <!-- Панель переводчика -->
+    <div id="translator-panel" class="panel translator-panel hidden">
+        <div class="sentence-box" id="sentence-box">
+            <span class="sentence-placeholder">Покажите жест, чтобы начать предложение...</span>
+        </div>
+        <div class="translator-controls">
+            <button class="btn-action btn-delete" onclick="deleteLastWord()">Удалить слово ⌫</button>
+            <button class="btn-action btn-clear" onclick="clearSentence()">Очистить всё 🗑</button>
+        </div>
+    </div>
+
     <div class="camera-wrapper">
         <div class="camera-container">
             <video id="webcam" autoplay playsinline></video>
             <canvas id="overlay"></canvas>
-            
-            <!-- HUD элементы -->
             <div class="scanline"></div>
             <div class="hud-corner hud-tl"></div>
             <div class="hud-corner hud-tr"></div>
             <div class="hud-corner hud-bl"></div>
             <div class="hud-corner hud-br"></div>
-
             <div class="loading-overlay" id="loading">
                 <div class="spinner"></div>
                 <div style="font-family: 'Montserrat'; font-weight: 800; letter-spacing: 3px; color: var(--blue);">ЗАГРУЗКА ИИ...</div>
@@ -378,17 +325,12 @@
 
     <div class="status-message" id="status"></div>
 
-    <div class="controls">
-        <button class="btn-skip" id="btn-skip" onclick="skipGesture()">Пропустить ⏭</button>
-        <button class="btn-restart hidden" id="btn-restart" onclick="restartGame()">Начать заново 🔄</button>
-    </div>
-
     <!-- Подключение MediaPipe -->
     <script type="module">
         import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
 
         const GESTURES_DB = {
-            "ДА (Класс)": [1, 0, 0, 0, 0],
+            "ДА": [1, 0, 0, 0, 0],
             "НЕТ": [0, 1, 0, 0, 0],
             "ПРИВЕТ": [1, 1, 1, 1, 1],
             "ЛЮБЛЮ": [1, 1, 0, 0, 1],
@@ -396,32 +338,42 @@
         };
 
         const HINTS = {
-            "ДА (Класс)": "Поднимите большой палец вверх",
+            "ДА": "Поднимите большой палец вверх",
             "НЕТ": "Поднимите только указательный палец",
             "ПРИВЕТ": "Покажите открытую ладонь",
             "ЛЮБЛЮ": "Большой, указательный и мизинец",
             "ПОКА": "Ладонь без большого пальца"
         };
 
+        // Состояние
+        let currentMode = 'trainer'; // 'trainer' или 'translator'
+        
+        // Тренажер
         const gestureList = Object.keys(GESTURES_DB);
         let currentIndex = 0;
         let currentTarget = gestureList[currentIndex];
-        
         let startTime = Date.now();
         let isCountingDown = false;
         let countdownStart = 0;
         let isFinished = false;
 
+        // Переводчик
+        let sentence = [];
+        let lastGestureTime = 0;
+        let gestureCooldown = 2000; // 2 секунды между словами
+
+        // DOM
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('overlay');
         const ctx = canvas.getContext('2d');
         const loadingOverlay = document.getElementById('loading');
-        const taskNameEl = document.getElementById('task-name');
-        const taskHintEl = document.getElementById('task-hint');
-        const progressEl = document.getElementById('progress');
         const statusEl = document.getElementById('status');
-        const btnSkip = document.getElementById('btn-skip');
-        const btnRestart = document.getElementById('btn-restart');
+        
+        const trainerPanel = document.getElementById('trainer-panel');
+        const translatorPanel = document.getElementById('translator-panel');
+        const btnTrainer = document.getElementById('btn-mode-trainer');
+        const btnTranslator = document.getElementById('btn-mode-translator');
+        const sentenceBox = document.getElementById('sentence-box');
 
         let handLandmarker;
         let lastVideoTime = -1;
@@ -430,7 +382,6 @@
             const vision = await FilesetResolver.forVisionTasks(
                 "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
             );
-            
             handLandmarker = await HandLandmarker.createFromOptions(vision, {
                 baseOptions: {
                     modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
@@ -445,43 +396,80 @@
                     video.srcObject = stream;
                     video.addEventListener("loadeddata", predictWebcam);
                     loadingOverlay.classList.add('hidden');
-                    updateUI();
+                    updateTrainerUI();
                 })
                 .catch(err => {
                     loadingOverlay.innerHTML = "<div style='color:#EF4444; font-weight:bold; font-size: 20px;'>ОШИБКА: НЕТ ДОСТУПА К КАМЕРЕ</div>";
                 });
         }
 
+        // --- Переключение режимов ---
+        window.switchMode = function(mode) {
+            currentMode = mode;
+            if (mode === 'trainer') {
+                btnTrainer.classList.add('active');
+                btnTranslator.classList.remove('active');
+                trainerPanel.classList.remove('hidden');
+                translatorPanel.classList.add('hidden');
+                restartGame(); // Сброс тренажера
+            } else {
+                btnTranslator.classList.add('active');
+                btnTrainer.classList.remove('active');
+                translatorPanel.classList.remove('hidden');
+                trainerPanel.classList.add('hidden');
+                statusEl.textContent = "";
+                clearSentence();
+            }
+        };
+
+        // --- Функции переводчика ---
+        window.clearSentence = function() {
+            sentence = [];
+            updateSentenceUI();
+        };
+
+        window.deleteLastWord = function() {
+            if (sentence.length > 0) {
+                sentence.pop();
+                updateSentenceUI();
+            }
+        };
+
+        function updateSentenceUI() {
+            sentenceBox.innerHTML = '';
+            if (sentence.length === 0) {
+                sentenceBox.innerHTML = '<span class="sentence-placeholder">Покажите жест, чтобы начать предложение...</span>';
+            } else {
+                sentence.forEach(word => {
+                    const span = document.createElement('span');
+                    span.className = 'sentence-word';
+                    span.textContent = word;
+                    sentenceBox.appendChild(span);
+                });
+            }
+        }
+
+        // --- Распознавание пальцев ---
         function getFingerStates(landmarks) {
             const fingers = [];
-            const thumbTip = landmarks[4];
-            const thumbIp = landmarks[3];
-            const indexMcp = landmarks[5];
-            
+            const thumbTip = landmarks[4], thumbIp = landmarks[3], indexMcp = landmarks[5];
             const distTip = Math.hypot(thumbTip.x - indexMcp.x, thumbTip.y - indexMcp.y);
             const distIp = Math.hypot(thumbIp.x - indexMcp.x, thumbIp.y - indexMcp.y);
             fingers.push(distTip > distIp * 1.2 ? 1 : 0);
-
-            const tips = [8, 12, 16, 20];
-            const pips = [6, 10, 14, 18];
-            for (let i = 0; i < 4; i++) {
-                fingers.push(landmarks[tips[i]].y < landmarks[pips[i]].y ? 1 : 0);
-            }
+            const tips = [8, 12, 16, 20], pips = [6, 10, 14, 18];
+            for (let i = 0; i < 4; i++) fingers.push(landmarks[tips[i]].y < landmarks[pips[i]].y ? 1 : 0);
             return fingers;
         }
 
         function calculateAccuracy(userFingers, targetFingers) {
             let matches = 0;
-            for (let i = 0; i < 5; i++) {
-                if (userFingers[i] === targetFingers[i]) matches++;
-            }
+            for (let i = 0; i < 5; i++) if (userFingers[i] === targetFingers[i]) matches++;
             return Math.floor((matches / 5) * 100);
         }
 
         function predictWebcam() {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-
             let startTimeMs = performance.now();
             if (lastVideoTime !== video.currentTime) {
                 lastVideoTime = video.currentTime;
@@ -498,84 +486,71 @@
             if (results.landmarks && results.landmarks.length > 0) {
                 for (const landmarks of results.landmarks) {
                     for (const lm of landmarks) {
-                        const x = lm.x * canvas.width;
-                        const y = lm.y * canvas.height;
-                        
-                        // Плазменные точки (Оранжевое свечение + Синий центр)
-                        ctx.shadowBlur = 15;
-                        ctx.shadowColor = '#D96640';
-                        
-                        ctx.beginPath();
-                        ctx.arc(x, y, 6, 0, 2 * Math.PI);
-                        ctx.fillStyle = '#4385C7';
-                        ctx.fill();
-                        
-                        ctx.beginPath();
-                        ctx.arc(x, y, 2, 0, 2 * Math.PI);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fill();
-                        
-                        ctx.shadowBlur = 0; // Сброс
+                        const x = lm.x * canvas.width, y = lm.y * canvas.height;
+                        ctx.shadowBlur = 15; ctx.shadowColor = '#D96640';
+                        ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI); ctx.fillStyle = '#4385C7'; ctx.fill();
+                        ctx.beginPath(); ctx.arc(x, y, 2, 0, 2 * Math.PI); ctx.fillStyle = '#ffffff'; ctx.fill();
+                        ctx.shadowBlur = 0;
                     }
                     userFingers = getFingerStates(landmarks);
                 }
             }
 
-            if (!isFinished) {
-                if (isCountingDown) {
-                    const elapsed = (Date.now() - countdownStart) / 1000;
-                    const remaining = 3.0 - elapsed;
-                    
-                    if (remaining > 0) {
-                        statusEl.textContent = `УСПЕХ! ЖДЕМ... ${Math.floor(remaining) + 1}`;
-                        statusEl.style.color = '#10B981';
-                        statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
-                    } else {
-                        isCountingDown = false;
-                        nextGesture();
-                    }
-                } 
-                else if (userFingers) {
-                    const targetFingers = GESTURES_DB[currentTarget];
-                    const accuracy = calculateAccuracy(userFingers, targetFingers);
-
-                    if (accuracy >= 80) {
-                        if ((Date.now() - startTime) / 1000 > 1.0) {
-                            isCountingDown = true;
-                            countdownStart = Date.now();
-                            statusEl.textContent = "УСПЕХ! ЖДЕМ... 3";
-                            statusEl.style.color = '#10B981';
-                            statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
-                        }
-                    } else {
-                        statusEl.textContent = `ПРОМАХ... ${accuracy}%`;
-                        statusEl.style.color = '#EF4444';
-                        statusEl.style.textShadow = '0 0 20px rgba(239, 68, 68, 0.8)';
-                        startTime = Date.now();
-                    }
-                } 
-                else {
-                    if (!isCountingDown) {
-                        startTime = Date.now();
-                        statusEl.textContent = "";
-                    }
-                }
+            if (currentMode === 'trainer') {
+                processTrainer(userFingers);
+            } else {
+                processTranslator(userFingers);
             }
         }
 
-        function updateUI() {
+        // --- Логика тренажера ---
+        function processTrainer(userFingers) {
+            if (isFinished) return;
+
+            if (isCountingDown) {
+                const elapsed = (Date.now() - countdownStart) / 1000;
+                const remaining = 3.0 - elapsed;
+                if (remaining > 0) {
+                    statusEl.textContent = `УСПЕХ! ЖДЕМ... ${Math.floor(remaining) + 1}`;
+                    statusEl.style.color = '#10B981'; statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
+                } else {
+                    isCountingDown = false;
+                    nextGesture();
+                }
+            } 
+            else if (userFingers) {
+                const targetFingers = GESTURES_DB[currentTarget];
+                const accuracy = calculateAccuracy(userFingers, targetFingers);
+                if (accuracy >= 80) {
+                    if ((Date.now() - startTime) / 1000 > 1.0) {
+                        isCountingDown = true;
+                        countdownStart = Date.now();
+                        statusEl.textContent = "УСПЕХ! ЖДЕМ... 3";
+                        statusEl.style.color = '#10B981'; statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
+                    }
+                } else {
+                    statusEl.textContent = `ПРОМАХ... ${accuracy}%`;
+                    statusEl.style.color = '#EF4444'; statusEl.style.textShadow = '0 0 20px rgba(239, 68, 68, 0.8)';
+                    startTime = Date.now();
+                }
+            } 
+            else if (!isCountingDown) {
+                startTime = Date.now();
+                statusEl.textContent = "";
+            }
+        }
+
+        function updateTrainerUI() {
             if (isFinished) {
-                progressEl.textContent = "ГОТОВО";
-                taskNameEl.textContent = "ТРЕНИРОВКА ЗАВЕРШЕНА";
-                taskHintEl.textContent = "Вы отлично справились!";
-                btnSkip.classList.add('hidden');
-                btnRestart.classList.remove('hidden');
+                document.getElementById('progress').textContent = "ГОТОВО";
+                document.getElementById('task-name').textContent = "ТРЕНИРОВКА ЗАВЕРШЕНА";
+                document.getElementById('task-hint').textContent = "Вы отлично справились!";
             } else {
                 let num = (currentIndex + 1).toString().padStart(2, '0');
                 let total = gestureList.length.toString().padStart(2, '0');
-                progressEl.textContent = `${num} / ${total}`;
-                taskNameEl.textContent = currentTarget;
-                taskHintEl.textContent = HINTS[currentTarget];
+                document.getElementById('progress').textContent = `${num} / ${total}`;
+                document.getElementById('task-name').textContent = currentTarget;
+                document.getElementById('task-hint').textContent = HINTS[currentTarget];
             }
         }
 
@@ -583,42 +558,60 @@
             if (isFinished) return;
             currentIndex++;
             if (currentIndex >= gestureList.length) {
-                finishGame();
+                isFinished = true;
+                statusEl.textContent = "🎉 УСПЕХ! 🎉";
+                statusEl.style.color = '#D96640'; statusEl.style.textShadow = '0 0 30px rgba(217, 102, 64, 0.9)';
+                updateTrainerUI();
                 return;
             }
             currentTarget = gestureList[currentIndex];
-            startTime = Date.now();
-            statusEl.textContent = "";
-            isCountingDown = false;
-            updateUI();
+            startTime = Date.now(); statusEl.textContent = ""; isCountingDown = false;
+            updateTrainerUI();
         }
 
-        function skipGesture() { nextGesture(); }
+        window.restartGame = function() {
+            isFinished = false; currentIndex = 0; currentTarget = gestureList[0];
+            startTime = Date.now(); isCountingDown = false; statusEl.textContent = "";
+            updateTrainerUI();
+        };
 
-        function finishGame() {
-            isFinished = true;
-            isCountingDown = false;
-            statusEl.textContent = "🎉 УСПЕХ! 🎉";
-            statusEl.style.color = '#D96640';
-            statusEl.style.textShadow = '0 0 30px rgba(217, 102, 64, 0.9)';
-            updateUI();
+        // --- Логика переводчика ---
+        function processTranslator(userFingers) {
+            if (!userFingers) {
+                statusEl.textContent = "";
+                return;
+            }
+
+            // Ищем совпадение среди всех жестов
+            let recognizedGesture = null;
+            for (const [gestureName, targetFingers] of Object.entries(GESTURES_DB)) {
+                if (calculateAccuracy(userFingers, targetFingers) >= 80) {
+                    recognizedGesture = gestureName;
+                    break;
+                }
+            }
+
+            if (recognizedGesture) {
+                statusEl.textContent = `РАСПОЗНАНО: ${recognizedGesture}`;
+                statusEl.style.color = '#4385C7';
+                statusEl.style.textShadow = '0 0 15px rgba(67, 133, 199, 0.8)';
+
+                // Если прошло достаточно времени с последнего слова
+                if (Date.now() - lastGestureTime > gestureCooldown) {
+                    sentence.push(recognizedGesture);
+                    lastGestureTime = Date.now();
+                    updateSentenceUI();
+                    
+                    // Визуальный фидбек
+                    statusEl.textContent = `ДОБАВЛЕНО: ${recognizedGesture}`;
+                    statusEl.style.color = '#10B981';
+                }
+            } else {
+                statusEl.textContent = "ЖЕСТ НЕ РАСПОЗНАН";
+                statusEl.style.color = '#EF4444';
+                statusEl.style.textShadow = '0 0 15px rgba(239, 68, 68, 0.5)';
+            }
         }
-
-        function restartGame() {
-            isFinished = false;
-            currentIndex = 0;
-            currentTarget = gestureList[0];
-            startTime = Date.now();
-            isCountingDown = false;
-            statusEl.textContent = "";
-            btnSkip.classList.remove('hidden');
-            btnRestart.classList.add('hidden');
-            updateUI();
-        }
-
-        // Делаем функции глобальными для кнопок HTML
-        window.skipGesture = skipGesture;
-        window.restartGame = restartGame;
 
         init();
     </script>
