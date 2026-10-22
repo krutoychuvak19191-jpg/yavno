@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yawno | Neural Gesture Interface</title>
+    <title>Yavno | Neural Gesture Interface</title>
     
     <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&family=Inter:wght@300;400;600;800&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&family=Montserrat:wght@700;800;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
+        /* --- Переменные цветов --- */
         :root {
-            --primary: #4385C7;     /* Ваш синий */
-            --accent: #D96640;      /* Ваш оранжевый */
-            --bg-dark: #070a12;
+            --blue: #4385C7;
+            --orange: #D96640;
+            --bg-dark: #05080f;
+            --bg-panel: rgba(13, 21, 33, 0.7);
             --text-main: #ffffff;
-            --text-muted: #8da4c4;
+            --text-muted: #7b94b5;
             --success: #10B981;
             --danger: #EF4444;
         }
@@ -28,7 +30,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* --- Переливающийся анимированный фон --- */
+        /* --- Футуристичный фон с сеткой --- */
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -37,170 +39,172 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            overflow: hidden; /* Убираем скролл, чтобы фон не дергался */
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(67, 133, 199, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(67, 133, 199, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center;
             position: relative;
         }
 
-        /* Светящиеся сферы на фоне */
-        .bg-orb {
+        /* Свечение на фоне */
+        .bg-glow {
             position: absolute;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
-            filter: blur(100px);
+            filter: blur(120px);
             z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite alternate ease-in-out;
+            opacity: 0.3;
         }
-        .orb-blue {
-            width: 500px; height: 500px;
-            background: var(--primary);
-            top: -100px; left: -100px;
-        }
-        .orb-orange {
-            width: 400px; height: 400px;
-            background: var(--accent);
-            bottom: -50px; right: -50px;
-            animation-delay: -5s;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 50px) scale(1.2); }
-        }
+        .glow-blue { background: var(--blue); top: -200px; left: -200px; }
+        .glow-orange { background: var(--orange); bottom: -200px; right: -200px; }
 
         /* --- Шапка --- */
         header {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            z-index: 10;
+            border-bottom: 1px solid rgba(67, 133, 199, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .logo-container {
             display: flex;
             align-items: baseline;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            z-index: 10;
+            gap: 15px;
         }
 
         .logo {
             font-family: 'Irish Grover', cursive;
-            font-size: 56px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(217, 102, 64, 0.5));
+            font-size: 64px;
+            color: var(--blue);
+            text-shadow: 0 0 20px rgba(67, 133, 199, 0.8);
             margin: 0;
-            letter-spacing: 2px;
-            animation: pulse-logo 3s infinite alternate;
-        }
-
-        @keyframes pulse-logo {
-            0% { filter: drop-shadow(0 0 10px rgba(67, 133, 199, 0.4)); }
-            100% { filter: drop-shadow(0 0 20px rgba(217, 102, 64, 0.6)); }
+            line-height: 1;
         }
 
         .subtitle {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: var(--orange);
             text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 600;
+            letter-spacing: 5px;
+            font-weight: 800;
         }
 
-        /* --- Стеклянная карточка задания --- */
+        /* --- Карточка задания --- */
         .task-card {
             width: 100%;
-            max-width: 900px;
-            background: rgba(25, 35, 55, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px 30px;
+            max-width: 1000px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 25px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(67, 133, 199, 0.1);
-            z-index: 10;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10;
         }
 
-        /* Переливающаяся полоска сверху карточки */
+        /* Светящаяся рамка карточки */
         .task-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
-            background-size: 200% 100%;
-            animation: gradient-move 3s linear infinite;
-        }
-
-        @keyframes gradient-move {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
+            inset: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(90deg, var(--blue), var(--orange));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         .task-info {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
         }
 
         .progress-badge {
-            background: linear-gradient(135deg, var(--primary), #2a649e);
-            color: white;
-            font-weight: 800;
-            font-size: 15px;
+            background: rgba(67, 133, 199, 0.15);
+            border: 1px solid var(--blue);
+            color: var(--blue);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 16px;
             padding: 10px 20px;
-            border-radius: 12px;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px rgba(67, 133, 199, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(67, 133, 199, 0.5);
+            box-shadow: 0 0 15px rgba(67, 133, 199, 0.2);
         }
 
         .task-name {
-            font-size: 30px;
-            font-weight: 800;
             font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
             color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .task-hint {
             font-size: 16px;
             color: var(--text-muted);
+            border-left: 3px solid var(--orange);
+            padding-left: 15px;
+            font-weight: 600;
         }
 
-        /* --- Контейнер с камерой --- */
-        .camera-container {
+        /* --- Контейнер с камерой (HUD) --- */
+        .camera-wrapper {
             position: relative;
             width: 100%;
-            max-width: 900px;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 24px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            max-width: 1000px;
+            border-radius: 20px;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--blue), transparent, var(--orange));
             z-index: 10;
         }
 
-        /* Светящаяся рамка вокруг камеры */
-        .camera-container::after {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--accent), var(--primary));
-            z-index: -1;
-            border-radius: 26px;
-            background-size: 200% 200%;
-            animation: border-glow 4s linear infinite;
+        .camera-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
         }
 
-        @keyframes border-glow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Эффект сканирующей линии */
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--orange);
+            box-shadow: 0 0 20px 5px rgba(217, 102, 64, 0.6);
+            opacity: 0.5;
+            animation: scan 3s linear infinite;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
         }
 
         video, canvas {
@@ -210,95 +214,113 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: scaleX(-1); /* Зеркальное отражение */
+            transform: scaleX(-1); /* Зеркало */
         }
 
         canvas { z-index: 10; }
+
+        /* Уголки HUD */
+        .hud-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--blue);
+            z-index: 12;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .hud-tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .hud-tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .hud-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .hud-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
 
         /* --- Загрузка --- */
         .loading-overlay {
             position: absolute;
             inset: 0;
-            background: var(--bg-dark);
+            background: rgba(5, 8, 15, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 20;
-            transition: opacity 0.5s ease;
+            backdrop-filter: blur(5px);
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(67, 133, 199, 0.2);
-            border-top-color: var(--accent);
-            border-bottom-color: var(--primary);
+            width: 70px;
+            height: 70px;
+            border: 3px solid rgba(67, 133, 199, 0.1);
+            border-top-color: var(--blue);
+            border-bottom-color: var(--orange);
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+            animation: spin 1s linear infinite;
             margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(217, 102, 64, 0.3);
+            box-shadow: 0 0 30px rgba(217, 102, 64, 0.2);
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- Статус и кнопки --- */
+        /* --- Статус --- */
         .status-message {
-            font-size: 26px;
-            font-weight: 800;
             font-family: 'Montserrat', sans-serif;
-            min-height: 45px;
-            margin: 20px 0;
+            font-size: 28px;
+            font-weight: 900;
+            min-height: 50px;
+            margin: 25px 0;
             text-align: center;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             z-index: 10;
+            transition: all 0.3s ease;
         }
 
+        /* --- Кнопки --- */
         .controls {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             z-index: 10;
         }
 
         button {
-            padding: 16px 36px;
+            padding: 18px 45px;
+            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
             font-weight: 800;
-            font-family: 'Montserrat', sans-serif;
             border: none;
-            border-radius: 16px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        /* Оранжевая кнопка (Пропустить) */
         .btn-skip {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 0 20px rgba(217, 102, 64, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--orange);
+            border: 2px solid var(--orange);
+            box-shadow: inset 0 0 15px rgba(217, 102, 64, 0.2);
         }
 
         .btn-skip:hover {
-            background: #e6734d;
-            box-shadow: 0 0 30px rgba(217, 102, 64, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px) scale(1.02);
+            background: var(--orange);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(217, 102, 64, 0.8), inset 0 0 10px rgba(255,255,255,0.3);
+            transform: translateY(-2px);
         }
 
-        /* Синяя кнопка (Заново) */
         .btn-restart {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 0 20px rgba(67, 133, 199, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(67, 133, 199, 0.5);
         }
 
         .btn-restart:hover {
             background: #529ae0;
-            box-shadow: 0 0 30px rgba(67, 133, 199, 0.9), inset 0 0 15px rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 40px rgba(67, 133, 199, 0.9);
+            transform: translateY(-2px);
         }
 
         .hidden { display: none !important; }
@@ -306,8 +328,8 @@
         /* --- Адаптивность --- */
         @media (max-width: 768px) {
             .task-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .logo { font-size: 44px; }
-            header { flex-direction: column; gap: 5px; }
+            .logo { font-size: 48px; }
+            header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .task-name { font-size: 24px; }
             .controls { width: 100%; flex-direction: column; }
             button { width: 100%; }
@@ -316,31 +338,41 @@
 </head>
 <body>
 
-    <!-- Фоновые переливающиеся сферы -->
-    <div class="bg-orb orb-blue"></div>
-    <div class="bg-orb orb-orange"></div>
+    <!-- Фоновое свечение -->
+    <div class="bg-glow glow-blue"></div>
+    <div class="bg-glow glow-orange"></div>
 
     <header>
-        <h1 class="logo">Yawno</h1>
-        <span class="subtitle">Neural Gesture Interface</span>
+        <div class="logo-container">
+            <h1 class="logo">Yavno</h1>
+            <span class="subtitle">Neural Interface</span>
+        </div>
     </header>
 
     <div class="task-card">
         <div class="task-info">
-            <div class="progress-badge" id="progress">1 / 5</div>
-            <div>
-                <div class="task-name" id="task-name">Загрузка...</div>
-                <div class="task-hint" id="task-hint">Подготовка нейросети...</div>
-            </div>
+            <div class="progress-badge" id="progress">01 / 05</div>
+            <div class="task-name" id="task-name">Инициализация...</div>
         </div>
+        <div class="task-hint" id="task-hint">Ожидание нейросети...</div>
     </div>
 
-    <div class="camera-container">
-        <video id="webcam" autoplay playsinline></video>
-        <canvas id="overlay"></canvas>
-        <div class="loading-overlay" id="loading">
-            <div class="spinner"></div>
-            <div style="font-weight: 600; letter-spacing: 2px;">ИНИЦИАЛИЗАЦИЯ ИИ...</div>
+    <div class="camera-wrapper">
+        <div class="camera-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="overlay"></canvas>
+            
+            <!-- HUD элементы -->
+            <div class="scanline"></div>
+            <div class="hud-corner hud-tl"></div>
+            <div class="hud-corner hud-tr"></div>
+            <div class="hud-corner hud-bl"></div>
+            <div class="hud-corner hud-br"></div>
+
+            <div class="loading-overlay" id="loading">
+                <div class="spinner"></div>
+                <div style="font-family: 'Montserrat'; font-weight: 800; letter-spacing: 3px; color: var(--blue);">ЗАГРУЗКА ИИ...</div>
+            </div>
         </div>
     </div>
 
@@ -351,11 +383,10 @@
         <button class="btn-restart hidden" id="btn-restart" onclick="restartGame()">Начать заново 🔄</button>
     </div>
 
-    <!-- Подключение MediaPipe Tasks Vision -->
+    <!-- Подключение MediaPipe -->
     <script type="module">
         import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
 
-        // --- Конфигурация жестов ---
         const GESTURES_DB = {
             "ДА (Класс)": [1, 0, 0, 0, 0],
             "НЕТ": [0, 1, 0, 0, 0],
@@ -381,7 +412,6 @@
         let countdownStart = 0;
         let isFinished = false;
 
-        // DOM Elements
         const video = document.getElementById('webcam');
         const canvas = document.getElementById('overlay');
         const ctx = canvas.getContext('2d');
@@ -393,7 +423,6 @@
         const btnSkip = document.getElementById('btn-skip');
         const btnRestart = document.getElementById('btn-restart');
 
-        // --- Инициализация MediaPipe ---
         let handLandmarker;
         let lastVideoTime = -1;
 
@@ -415,13 +444,11 @@
                 .then(stream => {
                     video.srcObject = stream;
                     video.addEventListener("loadeddata", predictWebcam);
-                    loadingOverlay.style.opacity = '0';
-                    setTimeout(() => loadingOverlay.classList.add('hidden'), 500);
+                    loadingOverlay.classList.add('hidden');
                     updateUI();
                 })
                 .catch(err => {
-                    loadingOverlay.innerHTML = "<div style='color:#EF4444; font-weight:bold;'>ОШИБКА ДОСТУПА К КАМЕРЕ</div>";
-                    console.error(err);
+                    loadingOverlay.innerHTML = "<div style='color:#EF4444; font-weight:bold; font-size: 20px;'>ОШИБКА: НЕТ ДОСТУПА К КАМЕРЕ</div>";
                 });
         }
 
@@ -474,21 +501,21 @@
                         const x = lm.x * canvas.width;
                         const y = lm.y * canvas.height;
                         
-                        // Переливающиеся точки на руке
+                        // Плазменные точки (Оранжевое свечение + Синий центр)
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#D96640';
+                        
                         ctx.beginPath();
-                        ctx.arc(x, y, 8, 0, 2 * Math.PI);
-                        ctx.fillStyle = 'rgba(217, 102, 64, 0.4)'; // Оранжевое свечение
-                        ctx.fill();
-
-                        ctx.beginPath();
-                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                        ctx.fillStyle = '#4385C7'; // Синий центр
+                        ctx.arc(x, y, 6, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#4385C7';
                         ctx.fill();
                         
                         ctx.beginPath();
                         ctx.arc(x, y, 2, 0, 2 * Math.PI);
                         ctx.fillStyle = '#ffffff';
                         ctx.fill();
+                        
+                        ctx.shadowBlur = 0; // Сброс
                     }
                     userFingers = getFingerStates(landmarks);
                 }
@@ -500,9 +527,9 @@
                     const remaining = 3.0 - elapsed;
                     
                     if (remaining > 0) {
-                        statusEl.textContent = `✅ ВЕРНО! Ждём... ${Math.floor(remaining) + 1}`;
+                        statusEl.textContent = `УСПЕХ! ЖДЕМ... ${Math.floor(remaining) + 1}`;
                         statusEl.style.color = '#10B981';
-                        statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
+                        statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
                     } else {
                         isCountingDown = false;
                         nextGesture();
@@ -516,14 +543,14 @@
                         if ((Date.now() - startTime) / 1000 > 1.0) {
                             isCountingDown = true;
                             countdownStart = Date.now();
-                            statusEl.textContent = "✅ ВЕРНО! Ждём... 3";
+                            statusEl.textContent = "УСПЕХ! ЖДЕМ... 3";
                             statusEl.style.color = '#10B981';
-                            statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.6)';
+                            statusEl.style.textShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
                         }
                     } else {
-                        statusEl.textContent = `❌ Мимо... ${accuracy}%`;
+                        statusEl.textContent = `ПРОМАХ... ${accuracy}%`;
                         statusEl.style.color = '#EF4444';
-                        statusEl.style.textShadow = '0 0 20px rgba(239, 68, 68, 0.6)';
+                        statusEl.style.textShadow = '0 0 20px rgba(239, 68, 68, 0.8)';
                         startTime = Date.now();
                     }
                 } 
@@ -539,12 +566,14 @@
         function updateUI() {
             if (isFinished) {
                 progressEl.textContent = "ГОТОВО";
-                taskNameEl.textContent = "🎉 ТРЕНИРОВКА ЗАВЕРШЕНА! 🎉";
+                taskNameEl.textContent = "ТРЕНИРОВКА ЗАВЕРШЕНА";
                 taskHintEl.textContent = "Вы отлично справились!";
                 btnSkip.classList.add('hidden');
                 btnRestart.classList.remove('hidden');
             } else {
-                progressEl.textContent = `${currentIndex + 1} / ${gestureList.length}`;
+                let num = (currentIndex + 1).toString().padStart(2, '0');
+                let total = gestureList.length.toString().padStart(2, '0');
+                progressEl.textContent = `${num} / ${total}`;
                 taskNameEl.textContent = currentTarget;
                 taskHintEl.textContent = HINTS[currentTarget];
             }
@@ -564,16 +593,14 @@
             updateUI();
         }
 
-        function skipGesture() {
-            nextGesture();
-        }
+        function skipGesture() { nextGesture(); }
 
         function finishGame() {
             isFinished = true;
             isCountingDown = false;
-            statusEl.textContent = "🎉 ТРЕНИРОВКА ЗАВЕРШЕНА! 🎉";
-            statusEl.style.color = '#D96640'; // Оранжевый для финала
-            statusEl.style.textShadow = '0 0 30px rgba(217, 102, 64, 0.8)';
+            statusEl.textContent = "🎉 УСПЕХ! 🎉";
+            statusEl.style.color = '#D96640';
+            statusEl.style.textShadow = '0 0 30px rgba(217, 102, 64, 0.9)';
             updateUI();
         }
 
@@ -588,6 +615,10 @@
             btnRestart.classList.add('hidden');
             updateUI();
         }
+
+        // Делаем функции глобальными для кнопок HTML
+        window.skipGesture = skipGesture;
+        window.restartGame = restartGame;
 
         init();
     </script>
